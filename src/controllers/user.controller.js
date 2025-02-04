@@ -50,7 +50,6 @@ module.exports = {
           created_at,
           _id,
         };
-
         let token = jwt.sign(userInfo, process.env.JWT_KEY);
         responseHelper.success(res, "Login successful!", token);
         return;
@@ -64,10 +63,18 @@ module.exports = {
   },
   CreateNewUser: async (req, res, next) => {
     try {
+      const existingUser = await getUserByEmail(req.body.email);
+      if (existingUser) {
+        responseHelper.badRequest(res, "User by that email already exists", {
+          name: existingUser.name,
+          email: existingUser.email,
+        });
+        return;
+      }
+
       const hashedPassword = await hashPassword(req.body.password);
       req.body.password = hashedPassword;
       const user = await registerUser(req.body);
-
       if (user) {
         responseHelper.created(res, "User registered successfully", {
           name: user.name,

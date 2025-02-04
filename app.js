@@ -6,6 +6,8 @@ dotenv.config();
 
 // import API routes
 const userRouter = require("./src/routes/user.router");
+const blogRouter = require("./src/routes/blog.router");
+
 const connectDB = require("./src/configs/database");
 const errorHandler = require("./src/middlewares/errorHandler");
 
@@ -17,6 +19,7 @@ const port = process.env.PORT;
 
 // Allocate API routes
 app.use("/api/user", userRouter);
+app.use("/api/blog", blogRouter);
 app.use(errorHandler);
 
 connectDB();
