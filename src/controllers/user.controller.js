@@ -50,7 +50,9 @@ module.exports = {
           created_at,
           _id,
         };
-        let token = jwt.sign(userInfo, process.env.JWT_KEY);
+        let token = jwt.sign(userInfo, process.env.JWT_KEY, {
+          expiresIn: "1h",
+        });
         responseHelper.success(res, "Login successful!", token);
         return;
       }

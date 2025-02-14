@@ -1,7 +1,7 @@
 const blogModel = require("../models/blog.model");
 
-const getAllBlogs = async () => {
-  return await blogModel.find();
+const getAllBlogs = async (page, limit, offset) => {
+  return await blogModel.find().skip(offset).limit(limit);
 };
 
 const getBlogById = async (id) => {
@@ -21,10 +21,16 @@ const removeBlog = async (id) => {
   return await blogModel.findByIdAndDelete(id);
 };
 
+const findBlogByQuery = async (query) => {
+  console.log("query", query);
+  return await blogModel.find(query);
+};
+
 module.exports = {
   getAllBlogs,
   getBlogById,
   createBlog,
   updateBlog,
   removeBlog,
+  findBlogByQuery,
 };

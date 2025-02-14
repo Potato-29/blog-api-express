@@ -5,14 +5,25 @@ const {
   getBlogById,
   updateBlog,
   removeBlog,
+  findBlogByQuery,
 } = require("../services/blog.service");
+const blogModel = require("../models/blog.model");
 
 module.exports = {
   ListAllBlogs: async (req, res, next) => {
     try {
-      const blogs = await getAllBlogs();
+      const { page, limit } = req.query;
+      const offset = (page - 1) * limit;
+      const blogs = await getAllBlogs(page, limit, offset);
+      const totalBlogs = await blogModel.countDocuments();
       if (blogs) {
-        responseHelper.success(res, "Success", blogs);
+        responseHelper.success(res, "Success", {
+          page,
+          limit,
+          totalBlogs,
+          totalPages: Math.ceil(totalBlogs / limit),
+          blogs,
+        });
       }
     } catch (error) {
       next(error);
@@ -65,6 +76,31 @@ module.exports = {
         responseHelper.success(res, "Deleted successfully", null);
       }
     } catch (error) {
+      next(error);
+    }
+  },
+
+  SearchBlog: async (req, res, next) => {
+    try {
+      const { title, tags, author } = req.query;
+      const payload = {};
+
+      if (title !== undefined && title !== "") {
+        payload.title = { $regex: title, $options: "i" };
+      }
+      if (tags !== undefined && tags !== "") {
+        payload.tags = { $in: tags.split(",") };
+      }
+      if (author !== undefined && author !== "") {
+        payload.author = { $regex: author, $options: "i" };
+      }
+
+      const blogs = await findBlogByQuery(payload);
+      if (blogs) {
+        responseHelper.success(res, "Found items!", blogs);
+      }
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   },
