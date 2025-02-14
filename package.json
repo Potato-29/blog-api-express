@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test:blogs": "jest src/test/blog.test.js --detectOpenHandles",
+    "test:users": "jest src/test/user.test.js --detectOpenHandles",
     "dev": "nodemon app.js",
     "generate-resource": "node src/scripts/generate-resource.js",
     "seed": "node src/scripts/seed-db.js"

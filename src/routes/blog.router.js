@@ -18,10 +18,22 @@ const validate = require("../middlewares/validate");
 const validateToken = require("../middlewares/auth-guard");
 
 router.get("/", ListAllBlogs);
-router.get("/search", SearchBlog); // auth guard
+router.get("/search", SearchBlog);
 router.get("/:id", fetchBlogValidationRules, validate, GetBlog);
-router.post("/", postBlogValidationRules, validate, CreateBlog); //auth guard
-router.put("/:id", updateBlogValidationRules, validate, UpdateBlogData); //auth guard
-router.delete("/:id", deleteBlogValidationRules, validate, DeleteBlog); //auth guard
+router.post("/", validateToken, postBlogValidationRules, validate, CreateBlog);
+router.put(
+  "/:id",
+  validateToken,
+  updateBlogValidationRules,
+  validate,
+  UpdateBlogData
+);
+router.delete(
+  "/:id",
+  validateToken,
+  deleteBlogValidationRules,
+  validate,
+  DeleteBlog
+);
 
 module.exports = router;

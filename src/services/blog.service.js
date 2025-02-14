@@ -5,7 +5,7 @@ const getAllBlogs = async (page, limit, offset) => {
 };
 
 const getBlogById = async (id) => {
-  return await blogModel.findById(id);
+  return await blogModel.findById({ _id: id });
 };
 
 const createBlog = async (data) => {
